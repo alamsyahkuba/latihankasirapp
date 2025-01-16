@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+double defaultMargin = 24;
+
+Color primaryColor = Color(0xFFFEF9E1);
+Color secondaryColor = Color(0xFF6D2323);
+Color thirdColor = Color(0xFFE5D0AC);
+Color fourthColor = Color(0xFFA31D1D);
+Color whiteColor = Colors.white;
+Color blackColor = Colors.black;
+Color greyColor = Color(0xFFE4E0E1);
+
+TextStyle firstTextStyle = GoogleFonts.roboto(fontSize: 15, color: fourthColor, fontWeight: FontWeight.w500);
+TextStyle secondTextStyle = GoogleFonts.poppins(fontSize: 30, color: secondaryColor, fontWeight: FontWeight.bold);
+TextStyle thirdTextStyle = GoogleFonts.poppins(fontSize: 15, color: blackColor, fontWeight: FontWeight.w500);
+
