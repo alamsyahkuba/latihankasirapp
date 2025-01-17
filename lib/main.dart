@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latihankasirapp/welcomepages.dart';
-
+import 'package:latihankasirapp/homeadmin.dart';
 void main() {
   runApp(const MyApp());
 }
