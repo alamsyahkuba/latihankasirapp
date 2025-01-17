@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:latihankasirapp/homeadmin.dart';
+import 'package:latihankasirapp/pages/homeadmin.dart';
 import 'theme.dart';
-import 'package:latihankasirapp/homeadmin.dart';
+import 'package:latihankasirapp/pages/homeadmin.dart';
 
 class Welcomepages extends StatefulWidget {
   const Welcomepages({super.key});
