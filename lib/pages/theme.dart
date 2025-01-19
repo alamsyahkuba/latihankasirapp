@@ -15,4 +15,7 @@ TextStyle firstTextStyle = GoogleFonts.roboto(fontSize: 15, color: fourthColor, 
 TextStyle secondTextStyle = GoogleFonts.poppins(fontSize: 30, color: secondaryColor, fontWeight: FontWeight.bold);
 TextStyle thirdTextStyle = GoogleFonts.poppins(fontSize: 15, color: blackColor, fontWeight: FontWeight.w500);
 TextStyle fourthTextStyle = GoogleFonts.poppins(fontSize: 12, color : Colors.grey[400], fontWeight: FontWeight.w500);
+TextStyle fiveTextStyle = GoogleFonts.roboto(fontSize: 12, color : Colors.grey[700], fontWeight: FontWeight.normal);
+TextStyle sixTextStyle = GoogleFonts.poppins(fontSize: 15, color: secondaryColor, fontWeight: FontWeight.bold);
+
 

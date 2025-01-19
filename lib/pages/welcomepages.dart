@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:latihankasirapp/pages/homeadmin.dart';
+import 'package:latihankasirapp/pages/homepage.dart';
+// import 'package:latihankasirapp/pages/homepage.dart';
 import 'theme.dart';
-import 'package:latihankasirapp/pages/homeadmin.dart';
+import 'package:latihankasirapp/service/auth.dart';
+
 
 class Welcomepages extends StatefulWidget {
   const Welcomepages({super.key});
@@ -11,7 +13,26 @@ class Welcomepages extends StatefulWidget {
 }
 
 class _WelcomepagesState extends State<Welcomepages> {
-  var dropdownValue;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future _handleLogin() async {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
+    final isSuccess = await auth(email, password);
+
+    if (isSuccess) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context)=> HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Email atau Password Anda salah!"))
+      );
+    }
+  }
   bool _isPasswordVisible = false;
 
   @override
@@ -36,15 +57,16 @@ class _WelcomepagesState extends State<Welcomepages> {
               height: 20,
             ),
             Text(
-              "Email atau Username",
+              "Email",
               style: thirdTextStyle,
             ),
             const SizedBox(
               height: 5,
             ),
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
-                hintText: 'Masukkan Email atau Username',
+                hintText: 'Masukkan Email',
                 hintStyle: fourthTextStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -66,6 +88,7 @@ class _WelcomepagesState extends State<Welcomepages> {
               height: 5,
             ),
             TextField(
+              controller: _passwordController,
               obscureText: !_isPasswordVisible, //field memasukkan sandi dengan biar bisa dilihat - disensor
               decoration: InputDecoration(
                 hintText: 'Masukkan Kata Sandi',
@@ -91,63 +114,10 @@ class _WelcomepagesState extends State<Welcomepages> {
               ),
             ),
             const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Masuk Sebagai",
-              style: thirdTextStyle,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: greyColor,
-                  width: 2.0,
-                ),
-              ),
-              child: DropdownButton<String>( //dropdown admin - petugas
-                value: dropdownValue,
-                isExpanded: true,
-                icon: const Icon(Icons.arrow_drop_down),
-                dropdownColor: whiteColor,
-                style: thirdTextStyle.copyWith(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                ),
-                underline: const SizedBox(),
-                items: ['Admin', 'Petugas']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      dropdownValue = newValue;
-                    });
-                  }
-                },
-              ),
-            ),
-            const SizedBox(
               height: 30,
             ),
             TextButton(
-              onPressed: () {
-                if (dropdownValue == 'Admin'){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeAdmin()),
-                  );
-                }
-              },
+              onPressed: _handleLogin,
               style: ButtonStyle(
                 padding: MaterialStateProperty.resolveWith((states) {
                   return const EdgeInsets.symmetric(
