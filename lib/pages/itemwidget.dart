@@ -40,7 +40,7 @@ class ItemWidget extends StatelessWidget {
                   child: Container(
                     margin: EdgeInsets.all(10),
                     child: Image.asset(
-                      "images/login.jpg",
+                      "images/sepatu.webp",
                       height: 120,
                       width: 120,
                     ),
@@ -57,7 +57,7 @@ class ItemWidget extends StatelessWidget {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Deskripsi Produk",
+                    "Stok Produk : ",
                     style: fiveTextStyle,
                   ),
                 ),

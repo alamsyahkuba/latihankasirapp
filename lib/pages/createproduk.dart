@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 
 class CreateProductPage extends StatefulWidget {
@@ -28,6 +29,13 @@ class _CreateProductPageState extends State<CreateProductPage> {
       //   SnackBar(content: Text('Produk berhasil disimpan!')),
       // );
 
+      // Formatter Rupiah
+      // final NumberFormat _currencyFormat = NumberFormat.currency(
+      //   locale: 'id_ID',
+      //   symbol: 'Rp',
+      //   decimalDigits: 0,
+      // );
+
       // // Kosongkan form
       // _nameController.clear();
       // _descriptionController.clear();
@@ -40,7 +48,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Create Produk',
+          'Buat Produk',
           style: sixTextStyle,
         ),
       ),
@@ -53,9 +61,33 @@ class _CreateProductPageState extends State<CreateProductPage> {
             children: [
               TextFormField(
                 controller: _nameController,
+                style: sevenTextStyle.copyWith(
+                  // Menggunakan gaya yang ada dan menyesuaikan
+                  fontFamily: 'Poppins', // Mengganti font menjadi Roboto
+                  fontSize: 13, // Ukuran font lebih besar
+                ),
                 decoration: InputDecoration(
                   labelText: 'Nama Produk',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(
+                    color: secondaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                        color: greyColor,
+                        width: 2.0), // Warna border saat tidak fokus
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                        color: greyColor,
+                        width: 2.0), // Warna border saat fokus
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -67,13 +99,36 @@ class _CreateProductPageState extends State<CreateProductPage> {
               SizedBox(height: 16),
               TextFormField(
                 controller: _descriptionController,
+                style: sevenTextStyle.copyWith(
+                  fontFamily: 'Poppins',
+                  fontSize: 13,
+                ),
                 decoration: InputDecoration(
-                  labelText: 'Deskripsi Produk',
-                  border: OutlineInputBorder(),
+                  labelText: 'Stok Produk',
+                  labelStyle: TextStyle(
+                    color: secondaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                        color: greyColor,
+                        width: 2.0), // Warna border saat tidak fokus
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                        color: greyColor,
+                        width: 2.0), // Warna border saat fokus
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Deskripsi produk tidak boleh kosong';
+                    return 'Stok produk tidak boleh kosong';
                   }
                   return null;
                 },
@@ -82,9 +137,32 @@ class _CreateProductPageState extends State<CreateProductPage> {
               TextFormField(
                 controller: _priceController,
                 keyboardType: TextInputType.number,
+                style: sevenTextStyle.copyWith(
+                  fontFamily: 'Poppins',
+                  fontSize: 13,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Harga Produk',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(
+                    color: secondaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                        color: greyColor,
+                        width: 2.0), // Warna border saat tidak fokus
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                        color: greyColor,
+                        width: 2.0), // Warna border saat fokus
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -99,7 +177,12 @@ class _CreateProductPageState extends State<CreateProductPage> {
               SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _saveProduct,
-                child: Text('Simpan Produk'),
+                child: Text(
+                  'Simpan Produk',
+                  style: secondTextStyle.copyWith(
+                    fontSize: 15,
+                  ),
+                ),
               ),
             ],
           ),
