@@ -36,14 +36,14 @@ class HomeAppBar extends StatelessWidget{
                 color: Colors.white,
               ),
             ),
-            child: InkWell(
-              onTap: () {},
-              child: Icon(
-                Icons.shopping_bag_outlined,
-                size: 32,
-                color: Colors.red[600],
-              ),
-            ),
+            // child: InkWell(
+            //   onTap: () {},
+            //   child: Icon(
+            //     Icons.c,
+            //     size: 32,
+            //     color: Colors.red[600],
+            //   ),
+            // ),
           )
         ],
       ),

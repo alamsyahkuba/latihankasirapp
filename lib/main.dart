@@ -3,6 +3,7 @@ import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:latihankasirapp/pages/welcomepages.dart';
 import 'package:latihankasirapp/service/supabase.dart';
+import 'package:latihankasirapp/pages/createproduk.dart';
 // import 'package:latihankasirapp/pages/homepage.dart';
 
 //untuk memanggil supabase
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: CreateProductPage(),
     );
   }
 }

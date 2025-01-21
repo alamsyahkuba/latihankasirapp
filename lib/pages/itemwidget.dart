@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 
-class ItemWidget extends StatelessWidget{
+class ItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -10,64 +10,74 @@ class ItemWidget extends StatelessWidget{
       shrinkWrap: true,
       children: [
         for (int i = 1; i < 8; i++)
-        Container(
-          padding: EdgeInsets.only(left: 15, right: 15, top: 10),
-          decoration: BoxDecoration(
-            color: Color(0xF8FAFC),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Spacer(),
-                  Icon(
-                    Icons.favorite_border,
-                    color: Colors.redAccent[700],
-                  ),
-                ],
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  margin: EdgeInsets.all(10),
-                  child: Image.asset(
-                    "images/login.jpg",
-                    height: 120,
-                    width: 120,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(bottom: 8),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Nama Produk",
-                  style: thirdTextStyle,
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Deskripsi Produk",
-                  style: fiveTextStyle,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Container(
+            padding: EdgeInsets.only(left: 15, right: 15, top: 10),
+            decoration: BoxDecoration(
+              color: Color(0xF8FAFC),
+              borderRadius: BorderRadius.circular(20),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.grey.withOpacity(0.5), //warna bayangan
+              //     spreadRadius: 0.5,
+              //     blurRadius: 1,
+              //     offset: Offset(1, 1),
+              //   )
+              // ]
+            ),
+            child: Column(
+              children: [
+                Row(
                   children: [
+                    Spacer(),
                     Icon(
-                      Icons.shopping_cart_checkout,
+                      Icons.favorite_border,
                       color: Colors.redAccent[700],
-                    )
+                    ),
                   ],
                 ),
-              )
-            ],
-          ),
-        )
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: Image.asset(
+                      "images/login.jpg",
+                      height: 120,
+                      width: 120,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(bottom: 8),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Nama Produk",
+                    style: thirdTextStyle,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Deskripsi Produk",
+                    style: fiveTextStyle,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.edit,
+                      ),
+                      Icon(
+                        Icons.delete,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
       ],
     );
   }
