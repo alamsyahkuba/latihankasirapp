@@ -1,33 +1,71 @@
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:latihankasirapp/pages/theme.dart';
+import 'package:latihankasirapp/pages/homepage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class CreateProductPage extends StatefulWidget {
+  const CreateProductPage({super.key});
+
   @override
   _CreateProductPageState createState() => _CreateProductPageState();
 }
 
 class _CreateProductPageState extends State<CreateProductPage> {
+  final supabase = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _stockController = TextEditingController();
 
-  void _saveProduct() {
-    if (_formKey.currentState!.validate()) {
-      // String name = _nameController.text;
-      // String description = _descriptionController.text;
-      // double price = double.parse(_priceController.text);
+  Future _saveProduct() async {
+  if (!_formKey.currentState!.validate()) {
+    return;
+  }
+  final name = _nameController.text;
+  final priceString = _priceController.text;
+  final stockString = _stockController.text;
 
-      // // Simpan data produk (logic tergantung kebutuhan, misalnya kirim ke API atau simpan ke database)
-      // print('Nama Produk: $name');
-      // print('Deskripsi Produk: $description');
-      // print('Harga Produk: $price');
+  final price = double.tryParse(priceString);
+  final stock = int.tryParse(stockString);
 
-      // // Tampilkan snackbar atau navigasi kembali
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Produk berhasil disimpan!')),
-      // );
+  final response = await supabase.from('products').insert({
+    'name': name,
+    'price': price,
+    'stock': stock,
+  });
+
+  if (response.error != null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Kesalahan: ${response.error.message}')),
+    );
+  } else {
+    // Kosongkan form
+    _nameController.clear();
+    _priceController.clear();
+    _stockController.clear();
+    // Tampilkan snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Produk berhasil disimpan!')),
+    );
+
+    // Langsung kembali ke halaman HomePage
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(),
+      ),
+    );
+
+
+    }
+        Navigator.pop(context, true);
+        Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(
+          builder: (context) => HomePage()),
+      );
 
       // Formatter Rupiah
       // final NumberFormat _currencyFormat = NumberFormat.currency(
@@ -35,12 +73,6 @@ class _CreateProductPageState extends State<CreateProductPage> {
       //   symbol: 'Rp',
       //   decimalDigits: 0,
       // );
-
-      // // Kosongkan form
-      // _nameController.clear();
-      // _descriptionController.clear();
-      // _priceController.clear();
-    }
   }
 
   @override
@@ -50,6 +82,12 @@ class _CreateProductPageState extends State<CreateProductPage> {
         title: Text(
           'Buat Produk',
           style: sixTextStyle,
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Padding(
@@ -98,7 +136,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
               ),
               SizedBox(height: 16),
               TextFormField(
-                controller: _descriptionController,
+                controller: _stockController,
+                keyboardType: TextInputType.number,
                 style: sevenTextStyle.copyWith(
                   fontFamily: 'Poppins',
                   fontSize: 13,

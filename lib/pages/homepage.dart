@@ -4,6 +4,7 @@ import 'theme.dart';
 import 'package:latihankasirapp/pages/welcomepages.dart';
 import 'package:latihankasirapp/pages/homeappbar.dart';
 import 'package:latihankasirapp/pages/itemwidget.dart';
+import 'package:latihankasirapp/pages/createproduk.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -83,7 +84,11 @@ class _HomePageState extends State<HomePage> {
                       )),
                   ElevatedButton(
                     onPressed: () {
-                      print("Tambah Produk");
+                      Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => CreateProductPage()),
+                        );
                     },
                     style: ElevatedButton.styleFrom(
                       shape: CircleBorder(),
