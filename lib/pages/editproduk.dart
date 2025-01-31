@@ -4,75 +4,82 @@ import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
-class CreateProductPage extends StatefulWidget {
-  const CreateProductPage({super.key});
+class EditProductPage extends StatefulWidget {
+  final Map<String, dynamic> product;
+  const EditProductPage({super.key, required this.product});
 
   @override
-  _CreateProductPageState createState() => _CreateProductPageState();
+  _EditProductPageState createState() => _EditProductPageState();
 }
 
-class _CreateProductPageState extends State<CreateProductPage> {
+class _EditProductPageState extends State<EditProductPage> {
   final supabase = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _stockController = TextEditingController();
+  late TextEditingController _nameController = TextEditingController();
+  late TextEditingController _priceController = TextEditingController();
+  late TextEditingController _stockController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.product['name']);
+    _priceController =
+        TextEditingController(text: widget.product['price'].toString());
+    _stockController =
+        TextEditingController(text: widget.product['stock'].toString());
+  }
 
   Future _saveProduct() async {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
-  final name = _nameController.text;
-  final priceString = _priceController.text;
-  final stockString = _stockController.text;
-
-  final price = double.tryParse(priceString);
-  final stock = int.tryParse(stockString);
-
-  final response = await supabase.from('products').insert({
-    'name': name,
-    'price': price,
-    'stock': stock,
-  });
-
-  if (response.error != null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Kesalahan: ${response.error.message}')),
-    );
-  } else {
-    // Kosongkan form
-    _nameController.clear();
-    _priceController.clear();
-    _stockController.clear();
-    // Tampilkan snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Produk berhasil disimpan!')),
-    );
-
-    // Langsung kembali ke halaman HomePage
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(),
-      ),
-    );
-
-
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
-        Navigator.pop(context, true);
-        Navigator.pushReplacement(
-          context, 
-          MaterialPageRoute(
-          builder: (context) => HomePage()),
+    final name = _nameController.text;
+    final priceString = _priceController.text;
+    final stockString = _stockController.text;
+
+    final price = double.tryParse(priceString);
+    final stock = int.tryParse(stockString);
+
+    final response = await supabase
+        .from('products')
+        .update({
+          'name': name,
+          'price': price,
+          'stock': stock,
+        })
+        .eq('id', widget.product['id'])
+        .select()
+        .maybeSingle();
+
+    if (response == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Kesalahan: $response')),
+      );
+    } else {
+      // Kosongkan form
+      _nameController.clear();
+      _priceController.clear();
+      _stockController.clear();
+      // Tampilkan snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Produk berhasil diperbarui!')),
       );
 
-      // Formatter Rupiah
-      // final NumberFormat _currencyFormat = NumberFormat.currency(
-      //   locale: 'id_ID',
-      //   symbol: 'Rp',
-      //   decimalDigits: 0,
-      // );
+      // Langsung kembali ke halaman HomePage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    }
+
+    // Formatter Rupiah
+    // final NumberFormat _currencyFormat = NumberFormat.currency(
+    //   locale: 'id_ID',
+    //   symbol: 'Rp',
+    //   decimalDigits: 0,
+    // );
   }
 
   @override
@@ -86,7 +93,10 @@ class _CreateProductPageState extends State<CreateProductPage> {
         leading: IconButton(
           icon: Icon(Icons.chevron_left),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
           },
         ),
       ),
