@@ -102,33 +102,33 @@ class _HomePageState extends State<HomePage> {
           ItemWidget(searchQuery: searchQuery),
         ],
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.white,
-        color: secondaryColor, // Warna merah untuk background navbar
-        animationDuration: Duration(milliseconds: 300),
-        items: [
-          Icon(
-            Icons.home,
-            size: 30,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.shopping_cart,
-            size: 30,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.history,
-            size: 30,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.people_alt_outlined,
-            size: 30,
-            color: Colors.white,
-          ),
-        ],
-      ),
+      // bottomNavigationBar: CurvedNavigationBar(
+      //   backgroundColor: Colors.white,
+      //   color: secondaryColor, // Warna merah untuk background navbar
+      //   animationDuration: Duration(milliseconds: 300),
+      //   items: [
+      //     Icon(
+      //       Icons.home,
+      //       size: 30,
+      //       color: Colors.white,
+      //     ),
+      //     Icon(
+      //       Icons.shopping_cart,
+      //       size: 30,
+      //       color: Colors.white,
+      //     ),
+      //     Icon(
+      //       Icons.history,
+      //       size: 30,
+      //       color: Colors.white,
+      //     ),
+      //     Icon(
+      //       Icons.people_alt_outlined,
+      //       size: 30,
+      //       color: Colors.white,
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
