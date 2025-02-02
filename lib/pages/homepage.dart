@@ -86,10 +86,10 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacement(
-                        context, 
+                        context,
                         MaterialPageRoute(
-                          builder: (context) => CreateProductPage()),
-                        );
+                            builder: (context) => CreateProductPage()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       shape: CircleBorder(),
@@ -106,40 +106,6 @@ class _HomePageState extends State<HomePage> {
           //Item Widget
           ItemWidget(searchQuery: searchQuery),
           // Memanggil ItemWidget dengan parameter searchQuery (yang bersifat required) dengan nilai searchQuery yang berisi inputan search dari pengguna
-        ],
-      ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
-        buttonBackgroundColor: fourthColor,
-        onTap: (index) {},
-        height: 70,
-        color: secondaryColor,
-        items: [
-          Icon(
-            Icons.home,
-            size: 30,
-            color: whiteColor,
-          ),
-          Icon(
-            Icons.shopping_cart,
-            size: 30,
-            color: whiteColor,
-          ),
-          Icon(
-            Icons.history,
-            size: 30,
-            color: whiteColor,
-          ),
-          Icon(
-            Icons.people_outline,
-            size: 30,
-            color: whiteColor,
-          ),
-          // Icon(
-          //   Icons.person_2_outlined,
-          //   size: 30,
-          //   color: whiteColor,
-          // )
         ],
       ),
     );
