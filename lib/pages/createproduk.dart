@@ -4,7 +4,6 @@ import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
 class CreateProductPage extends StatefulWidget {
   const CreateProductPage({super.key});
 
@@ -20,59 +19,51 @@ class _CreateProductPageState extends State<CreateProductPage> {
   final TextEditingController _stockController = TextEditingController();
 
   Future _saveProduct() async {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
-  final name = _nameController.text;
-  final priceString = _priceController.text;
-  final stockString = _stockController.text;
-
-  final price = double.tryParse(priceString);
-  final stock = int.tryParse(stockString);
-
-  final response = await supabase.from('products').insert({
-    'name': name,
-    'price': price,
-    'stock': stock,
-  });
-
-  if (response.error != null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Kesalahan: ${response.error.message}')),
-    );
-  } else {
-    // Kosongkan form
-    _nameController.clear();
-    _priceController.clear();
-    _stockController.clear();
-    // Tampilkan snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Produk berhasil disimpan!')),
-    );
-
-    // Langsung kembali ke halaman HomePage
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(),
-      ),
-    );
-
-
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
-        Navigator.pop(context, true);
-        Navigator.pushReplacement(
-          context, 
-          MaterialPageRoute(
-          builder: (context) => HomePage()),
+    final name = _nameController.text;
+    final priceString = _priceController.text;
+    final stockString = _stockController.text;
+
+    final price = double.tryParse(priceString);
+    final stock = int.tryParse(stockString);
+
+    final response = await supabase.from('products').insert({
+      'name': name,
+      'price': price,
+      'stock': stock,
+    });
+
+    if (response != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Kesalahan: $response')),
+      );
+    } else {
+      // Kosongkan form
+      _nameController.clear();
+      _priceController.clear();
+      _stockController.clear();
+      // Tampilkan snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Produk berhasil disimpan!')),
       );
 
-      // Formatter Rupiah
-      // final NumberFormat _currencyFormat = NumberFormat.currency(
-      //   locale: 'id_ID',
-      //   symbol: 'Rp',
-      //   decimalDigits: 0,
-      // );
+      // Langsung kembali ke halaman HomePage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    }
+
+    // Formatter Rupiah
+    // final NumberFormat _currencyFormat = NumberFormat.currency(
+    //   locale: 'id_ID',
+    //   symbol: 'Rp',
+    //   decimalDigits: 0,
+    // );
   }
 
   @override
@@ -86,7 +77,10 @@ class _CreateProductPageState extends State<CreateProductPage> {
         leading: IconButton(
           icon: Icon(Icons.chevron_left),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
           },
         ),
       ),
