@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String searchQuery = ''; // Menyimpan input search dari pengguna
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,11 +135,11 @@ class _HomePageState extends State<HomePage> {
             size: 30,
             color: whiteColor,
           ),
-          Icon(
-            Icons.person_2_outlined,
-            size: 30,
-            color: whiteColor,
-          )
+          // Icon(
+          //   Icons.person_2_outlined,
+          //   size: 30,
+          //   color: whiteColor,
+          // )
         ],
       ),
     );
