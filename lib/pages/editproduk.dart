@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihankasirapp/components/bottombar.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
@@ -69,7 +70,7 @@ class _EditProductPageState extends State<EditProductPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (context) => BottomBar(initialIndex: 0,),
         ),
       );
     }
@@ -87,7 +88,7 @@ class _EditProductPageState extends State<EditProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Buat Produk',
+          'Edit Produk',
           style: sixTextStyle,
         ),
         leading: IconButton(
@@ -95,7 +96,7 @@ class _EditProductPageState extends State<EditProductPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
             );
           },
         ),
