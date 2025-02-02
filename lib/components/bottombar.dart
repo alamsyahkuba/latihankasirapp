@@ -5,13 +5,23 @@ import 'package:latihankasirapp/pages/register.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 
 class BottomBar extends StatefulWidget {
+  final int initialIndex; // Tambahkan parameter untuk index awal
+  const BottomBar({super.key, this.initialIndex = 0});
+
   @override
   _BottomBarState createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int _currentIndex = 0;
-  final PageController _pageController = PageController();
+  late int _currentIndex = 0;
+  late PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex; // Gunakan initialIndex dari widget
+    _pageController = PageController(initialPage: _currentIndex);
+  }
 
   final List<Widget> _pages = [
     HomePage(),

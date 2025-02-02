@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'theme.dart';
 
-class HomeAppBar extends StatelessWidget{
+class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,41 +9,21 @@ class HomeAppBar extends StatelessWidget{
       padding: EdgeInsets.all(25),
       child: Row(
         children: [
-          Icon(
-            Icons.sort,
-            size: 30,
-            color: Colors.red[900],
+          Text(
+            "Dasbor",
+            style: secondTextStyle.copyWith(fontSize: 25, fontWeight: FontWeight.bold), // Membuat tulisan lebih besar
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 20,
+          Spacer(), // Memastikan ikon keluar berada di kanan
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              size: 30,
+              color: secondaryColor ,
             ),
-            child: Text(
-              "Dasbor",
-              style: thirdTextStyle,
-            ),
+            onPressed: () {
+              // Fungsi untuk keluar bisa ditambahkan di sini
+            },
           ),
-          Spacer(),
-          // badges.Badge(
-          //   badgeStyle: badges.BadgeStyle(
-          //     badgeColor: Colors.red,
-          //     padding: EdgeInsets.all(7),
-          //   ),
-          //   badgeContent: Text(
-          //     "3",
-          //     style: TextStyle(
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          //   // child: InkWell(
-          //   //   onTap: () {},
-          //   //   child: Icon(
-          //   //     Icons.c,
-          //   //     size: 32,
-          //   //     color: Colors.red[600],
-          //   //   ),
-          //   // ),
-          // )
         ],
       ),
     );

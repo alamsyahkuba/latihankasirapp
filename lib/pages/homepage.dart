@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'package:latihankasirapp/pages/welcomepages.dart';
@@ -15,7 +16,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String searchQuery = ''; // Menyimpan input search dari pengguna
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,6 @@ class _HomePageState extends State<HomePage> {
         children: [
           HomeAppBar(),
           Container(
-            //ukuran tinggi sementara
             padding: EdgeInsets.only(top: 15),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -54,7 +53,6 @@ class _HomePageState extends State<HomePage> {
                               hintText: "Ketik untuk cari..."),
                           onChanged: (value) {
                             setState(() {
-                              // Mengubah value dari pengguna menjadi lowercase
                               searchQuery = value.toLowerCase();
                             });
                           },
@@ -71,7 +69,6 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          //item
           Container(
             alignment: Alignment.centerLeft,
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -102,9 +99,34 @@ class _HomePageState extends State<HomePage> {
                   )
                 ]),
           ),
-          //Item Widget
           ItemWidget(searchQuery: searchQuery),
-          // Memanggil ItemWidget dengan parameter searchQuery (yang bersifat required) dengan nilai searchQuery yang berisi inputan search dari pengguna
+        ],
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.white,
+        color: secondaryColor, // Warna merah untuk background navbar
+        animationDuration: Duration(milliseconds: 300),
+        items: [
+          Icon(
+            Icons.home,
+            size: 30,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.shopping_cart,
+            size: 30,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.history,
+            size: 30,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.people_alt_outlined,
+            size: 30,
+            color: Colors.white,
+          ),
         ],
       ),
     );

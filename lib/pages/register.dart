@@ -124,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             const SizedBox(height: 10),
-            Text("Jabatan", style: thirdTextStyle),
+            Text("Role", style: thirdTextStyle),
             const SizedBox(height: 5),
             DropdownButtonFormField<String>(
               value: _selectedJabatan,

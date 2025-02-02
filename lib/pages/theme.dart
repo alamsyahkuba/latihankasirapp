@@ -9,7 +9,7 @@ Color thirdColor = Color(0xFFE5D0AC);
 Color fourthColor = Color(0xFFA31D1D);
 Color whiteColor = Colors.white;
 Color blackColor = Colors.black;
-Color greyColor = Color(0xFFE4E0E1);
+Color greyColor = Color.fromARGB(255, 112, 111, 111);
 
 TextStyle firstTextStyle = GoogleFonts.roboto(fontSize: 15, color: fourthColor, fontWeight: FontWeight.w500);
 TextStyle secondTextStyle = GoogleFonts.poppins(fontSize: 30, color: secondaryColor, fontWeight: FontWeight.bold);

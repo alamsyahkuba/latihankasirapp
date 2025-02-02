@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:latihankasirapp/components/bottombar.dart';
 
 class CreateProductPage extends StatefulWidget {
   const CreateProductPage({super.key});
@@ -44,11 +45,14 @@ class _CreateProductPageState extends State<CreateProductPage> {
       _priceController.clear();
       _stockController.clear();
 
-      Navigator.pop(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Produk berhasil ditambahkan')),
       );
     }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
+    );
   }
 
   @override
@@ -57,7 +61,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
       onWillPop: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
         );
         return false;
       },
@@ -69,7 +73,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
               );
             },
           ),
