@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String searchQuery = ''; // Menyimpan input search dari pengguna
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
