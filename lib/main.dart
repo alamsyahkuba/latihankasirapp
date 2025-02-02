@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latihankasirapp/components/bottombar.dart';
+import 'package:latihankasirapp/pages/welcomepages.dart';
 import 'package:latihankasirapp/service/supabase.dart';
 
 // import 'package:latihankasirapp/pages/homepage.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BottomBar(),
+      home: Welcomepages(),
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:latihankasirapp/components/bottombar.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
 // import 'package:latihankasirapp/pages/homepage.dart';
 import 'theme.dart';
 import 'package:latihankasirapp/service/auth.dart';
-
 
 class Welcomepages extends StatefulWidget {
   const Welcomepages({super.key});
@@ -25,14 +25,14 @@ class _WelcomepagesState extends State<Welcomepages> {
     if (isSuccess) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context)=> HomePage()),
+        MaterialPageRoute(builder: (context) => BottomBar()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Email atau Password Anda salah!"))
-      );
+          SnackBar(content: Text("Email atau Password Anda salah!")));
     }
   }
+
   bool _isPasswordVisible = false;
 
   @override
@@ -89,7 +89,8 @@ class _WelcomepagesState extends State<Welcomepages> {
             ),
             TextField(
               controller: _passwordController,
-              obscureText: !_isPasswordVisible, //field memasukkan sandi dengan biar bisa dilihat - disensor
+              obscureText:
+                  !_isPasswordVisible, //field memasukkan sandi dengan biar bisa dilihat - disensor
               decoration: InputDecoration(
                 hintText: 'Masukkan Kata Sandi',
                 hintStyle: fourthTextStyle.copyWith(
@@ -102,7 +103,10 @@ class _WelcomepagesState extends State<Welcomepages> {
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off, //logika yang mengubah sandi bisa dilihat atau tidak
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons
+                            .visibility_off, //logika yang mengubah sandi bisa dilihat atau tidak
                     color: greyColor,
                   ),
                   onPressed: () {
@@ -148,16 +152,11 @@ class _WelcomepagesState extends State<Welcomepages> {
             const SizedBox(
               height: 10,
             ),
-            Text(
-              "Lupa password?",
-              textAlign: TextAlign.right,
-              style: thirdTextStyle.copyWith(
-                fontSize: 10,
-                
-              )
-                
-
-            ),
+            Text("Lupa password?",
+                textAlign: TextAlign.right,
+                style: thirdTextStyle.copyWith(
+                  fontSize: 10,
+                )),
           ],
         ),
       ),
