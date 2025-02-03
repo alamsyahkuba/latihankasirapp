@@ -1,66 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:latihankasirapp/pages/theme.dart';
 
-class ProfilPelangganPage extends StatefulWidget {
-  @override
-  _ProfilPelangganPageState createState() => _ProfilPelangganPageState();
+class Pelanggan {
+  String nama;
+  String alamat;
+  String kontak;
+
+  Pelanggan({required this.nama, required this.alamat, required this.kontak});
 }
 
-class _ProfilPelangganPageState extends State<ProfilPelangganPage> {
-  // Daftar pelanggan yang ditampilkan
-  List<String> pelangganList = ['Pelanggan 1', 'Pelanggan 2', 'Pelanggan 3'];
-  
-  // Controller untuk mengelola input teks dari pengguna
-  TextEditingController pelangganController = TextEditingController();
+class PelangganPage extends StatefulWidget {
+  @override
+  _PelangganPageState createState() => _PelangganPageState();
+}
 
-  // Fungsi untuk menambah pelanggan baru
-  void _addPelanggan() {
-    // Cek apakah input nama pelanggan tidak kosong
-    if (pelangganController.text.isNotEmpty) {
-      setState(() {
-        // Menambah pelanggan baru ke dalam list
-        pelangganList.add(pelangganController.text);
-      });
-      // Mengosongkan input setelah menambah pelanggan
-      pelangganController.clear();
-    }
-  }
+class _PelangganPageState extends State<PelangganPage> {
+  List<Pelanggan> pelangganList = [];
+  String searchQuery = '';
 
-  // Fungsi untuk mengedit nama pelanggan yang sudah ada
-  void _editPelanggan(int index) {
-    // Mengisi field input dengan nama pelanggan yang akan diedit
-    pelangganController.text = pelangganList[index];
-    
-    // Menampilkan dialog untuk mengedit nama pelanggan
+  void _tambahPelanggan() {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
+        TextEditingController namaController = TextEditingController();
+        TextEditingController alamatController = TextEditingController();
+        TextEditingController kontakController = TextEditingController();
+        
         return AlertDialog(
-          title: Text('Edit Pelanggan'), // Judul dialog
-          content: TextField(
-            controller: pelangganController, // Menghubungkan dengan controller
-            decoration: InputDecoration(hintText: 'Nama Pelanggan'), // Placeholder
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text("Tambah Pelanggan", style: TextStyle(color: secondaryColor)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: namaController,
+                decoration: InputDecoration(labelText: "Nama Pelanggan", labelStyle: TextStyle(color: secondaryColor)),
+              ),
+              TextField(
+                controller: alamatController,
+                decoration: InputDecoration(labelText: "Alamat", labelStyle: TextStyle(color: secondaryColor)),
+              ),
+              TextField(
+                controller: kontakController,
+                decoration: InputDecoration(labelText: "No. Telepon", labelStyle: TextStyle(color: secondaryColor)),
+                keyboardType: TextInputType.phone,
+              ),
+            ],
           ),
           actions: [
-            // Tombol untuk menyimpan perubahan
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Batal", style: TextStyle(color: secondaryColor)),
+            ),
             TextButton(
               onPressed: () {
                 setState(() {
-                  // Mengupdate nama pelanggan pada list
-                  pelangganList[index] = pelangganController.text;
+                  pelangganList.add(Pelanggan(
+                    nama: namaController.text,
+                    alamat: alamatController.text,
+                    kontak: kontakController.text,
+                  ));
                 });
-                // Menutup dialog setelah perubahan disimpan
                 Navigator.pop(context);
               },
-              child: Text('Simpan'),
-            ),
-            // Tombol untuk membatalkan edit
-            TextButton(
-              onPressed: () {
-                // Menutup dialog dan membersihkan input
-                Navigator.pop(context);
-                pelangganController.clear();
-              },
-              child: Text('Batal'),
+              child: Text("Simpan", style: TextStyle(fontWeight: FontWeight.bold, color: secondaryColor)),
             ),
           ],
         );
@@ -68,70 +75,112 @@ class _ProfilPelangganPageState extends State<ProfilPelangganPage> {
     );
   }
 
-  // Fungsi untuk menghapus pelanggan dari daftar
-  void _deletePelanggan(int index) {
-    setState(() {
-      // Menghapus pelanggan pada index yang ditentukan
-      pelangganList.removeAt(index);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil Pelanggan'), // Judul di bagian atas aplikasi
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0), // Memberikan padding di sekitar tampilan
-        child: Column(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // TextField untuk memasukkan nama pelanggan baru
-            TextField(
-              controller: pelangganController, // Menghubungkan dengan controller
-              decoration: InputDecoration(
-                labelText: 'Nama Pelanggan', // Label untuk input
-                border: OutlineInputBorder(), // Border di sekitar input
-              ),
-            ),
-            SizedBox(height: 10), // Memberikan jarak antara elemen
-            ElevatedButton(
-              onPressed: _addPelanggan, // Menambah pelanggan saat tombol ditekan
-              child: Text('Tambah Pelanggan'), // Teks pada tombol
-            ),
-            SizedBox(height: 10), // Memberikan jarak lagi
-            Expanded(
-              child: ListView.builder(
-                itemCount: pelangganList.length, // Jumlah item berdasarkan jumlah pelanggan
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 5), // Memberikan margin pada card
-                    child: ListTile(
-                      leading: Icon(Icons.person), // Ikon orang di sebelah kiri
-                      title: Text(pelangganList[index]), // Nama pelanggan
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min, // Menyusun ikon di sebelah kanan
-                        children: [
-                          // Ikon untuk mengedit pelanggan
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () => _editPelanggan(index),
-                          ),
-                          // Ikon untuk menghapus pelanggan
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () => _deletePelanggan(index),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            Text("Kasir Pintar",
+            style: secondTextStyle.copyWith(fontSize: 25, fontWeight: FontWeight.bold, color: secondaryColor)),
+            Icon(Icons.exit_to_app, size: 30, color: secondaryColor),
           ],
         ),
       ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Ketik untuk cari...",
+                prefixIcon: Icon(Icons.search, color: secondaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase();
+                });
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Daftar Pelanggan",
+                  style: sixTextStyle.copyWith(
+                    fontSize: 18,
+                    color: secondaryColor,
+                  )),
+                IconButton(
+                  icon: Icon(Icons.add_circle, color: secondaryColor, size: 28),
+                  onPressed: _tambahPelanggan,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: pelangganList.length,
+              itemBuilder: (context, index) {
+                final pelanggan = pelangganList[index];
+                if (!pelanggan.nama.toLowerCase().contains(searchQuery)) {
+                  return SizedBox.shrink();
+                }
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      pelanggan.nama,
+                      style: sevenTextStyle.copyWith(fontWeight: FontWeight.bold, color: secondaryColor),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Alamat: ${pelanggan.alamat}", style: sevenTextStyle.copyWith(color: secondaryColor)),
+                        Text("No. Telepon: ${pelanggan.kontak}", style: sevenTextStyle.copyWith(color: secondaryColor)),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue[900]),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red[900]),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.white,
     );
   }
 }

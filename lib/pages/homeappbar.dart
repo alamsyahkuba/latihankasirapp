@@ -9,8 +9,9 @@ class HomeAppBar extends StatelessWidget {
       padding: EdgeInsets.all(25),
       child: Row(
         children: [
+          //appbar untuk home page
           Text(
-            "Dasbor",
+            "Kasir Pintar",
             style: secondTextStyle.copyWith(fontSize: 25, fontWeight: FontWeight.bold), // Membuat tulisan lebih besar
           ),
           Spacer(), // Memastikan ikon keluar berada di kanan
