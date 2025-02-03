@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latihankasirapp/pages/theme.dart';
+import 'package:latihankasirapp/pages/homeappbar.dart';
+import 'bottomnavigationbar.dart'; // Import the BottomNavigationBarWidget
 
 class Pelanggan {
   String nama;
@@ -18,6 +20,7 @@ class _PelangganPageState extends State<PelangganPage> {
   List<Pelanggan> pelangganList = [];
   String searchQuery = '';
 
+  // Add a new customer
   void _tambahPelanggan() {
     showDialog(
       context: context,
@@ -77,110 +80,105 @@ class _PelangganPageState extends State<PelangganPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BottomNavigationBarWidget(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100), // Adjust the height
+          child: Homeappbar(), // Your custom app bar
+        ),
+        body: Column(
           children: [
-            Text("Kasir Pintar",
-            style: secondTextStyle.copyWith(fontSize: 25, fontWeight: FontWeight.bold, color: secondaryColor)),
-            Icon(Icons.exit_to_app, size: 30, color: secondaryColor),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Ketik untuk cari...",
+                  prefixIcon: Icon(Icons.search, color: secondaryColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value.toLowerCase();
+                  });
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Daftar Pelanggan",
+                    style: sixTextStyle.copyWith(
+                      fontSize: 18,
+                      color: secondaryColor,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add_circle, color: secondaryColor, size: 28),
+                    onPressed: _tambahPelanggan,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: pelangganList.length,
+                itemBuilder: (context, index) {
+                  final pelanggan = pelangganList[index];
+                  if (!pelanggan.nama.toLowerCase().contains(searchQuery)) {
+                    return SizedBox.shrink();
+                  }
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        pelanggan.nama,
+                        style: sevenTextStyle.copyWith(fontWeight: FontWeight.bold, color: secondaryColor),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Alamat: ${pelanggan.alamat}", style: sevenTextStyle.copyWith(color: secondaryColor)),
+                          Text("No. Telepon: ${pelanggan.kontak}", style: sevenTextStyle.copyWith(color: secondaryColor)),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.blue[900]),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red[900]),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
+        backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Ketik untuk cari...",
-                prefixIcon: Icon(Icons.search, color: secondaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value.toLowerCase();
-                });
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Daftar Pelanggan",
-                  style: sixTextStyle.copyWith(
-                    fontSize: 18,
-                    color: secondaryColor,
-                  )),
-                IconButton(
-                  icon: Icon(Icons.add_circle, color: secondaryColor, size: 28),
-                  onPressed: _tambahPelanggan,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: pelangganList.length,
-              itemBuilder: (context, index) {
-                final pelanggan = pelangganList[index];
-                if (!pelanggan.nama.toLowerCase().contains(searchQuery)) {
-                  return SizedBox.shrink();
-                }
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                      ),
-                    ],
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      pelanggan.nama,
-                      style: sevenTextStyle.copyWith(fontWeight: FontWeight.bold, color: secondaryColor),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Alamat: ${pelanggan.alamat}", style: sevenTextStyle.copyWith(color: secondaryColor)),
-                        Text("No. Telepon: ${pelanggan.kontak}", style: sevenTextStyle.copyWith(color: secondaryColor)),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit, color: Colors.blue[900]),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red[900]),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      backgroundColor: Colors.white,
     );
   }
 }
