@@ -4,6 +4,18 @@ import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:latihankasirapp/components/bottombar.dart';
 
+void showCreateProductModal(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: Text("Tambah Produk", textAlign: TextAlign.center),
+        content: CreateProductPage(),
+      );
+    },
+  );
+}
 class CreateProductPage extends StatefulWidget {
   const CreateProductPage({super.key});
 

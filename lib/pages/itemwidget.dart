@@ -6,34 +6,25 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final supabase = Supabase.instance.client;
 
 class ItemWidget extends StatefulWidget {
-  const ItemWidget(
-      {super.key,
-      required this.searchQuery}); // Memberi opsi required searchQuery yang akan digunakan ketika memanggil ItemWidget di homepage
+  const ItemWidget({super.key, required this.searchQuery});
 
-  final String searchQuery; // Membuat variabel String
+  final String searchQuery;
 
   @override
   _ItemWidgetState createState() => _ItemWidgetState();
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
-  List<Map<String, dynamic>> products =
-      []; // List Map untuk products dalam bentuk array
+  List<Map<String, dynamic>> products = [];
 
   @override
   void initState() {
     super.initState();
     fetchProducts();
-  } // Melakukan inisialisasi ketika aplikasi baru dibuka
+  }
 
-  // Untuk mengambil data products dari supabase
   Future fetchProducts() async {
-    final response = await supabase
-        .from('products')
-        .select()
-        .order('created_at', ascending: false);
-
-    // memasukkan data yang telah diambil ke List array
+    final response = await supabase.from('products').select().order('created_at', ascending: false);
     setState(() {
       products = List<Map<String, dynamic>>.from(response);
     });
@@ -51,6 +42,8 @@ class _ItemWidgetState extends State<ItemWidget> {
       itemCount: filteredProducts.length,
       itemBuilder: (context, index) {
         final product = filteredProducts[index];
+        bool showQuantityControls = false;
+        int quantity = 0;
 
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -90,24 +83,67 @@ class _ItemWidgetState extends State<ItemWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      color: Colors.blue[900],
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return EditProductPage(
-                              product: product,
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          color: Colors.blue[900],
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return EditProductPage(
+                                  product: product,
+                                );
+                              }),
                             );
-                          }),
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          color: Colors.red[900],
+                          onPressed: () {
+                            // Tambahkan logika penghapusan produk
+                          },
+                        ),
+                      ],
+                    ),
+                    StatefulBuilder(
+                      builder: (context, setState) {
+                        return Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.shopping_cart),
+                              color: secondaryColor,
+                              onPressed: () {
+                                setState(() {
+                                  showQuantityControls = !showQuantityControls;
+                                });
+                              },
+                            ),
+                            if (showQuantityControls) ...[
+                              IconButton(
+                                icon: Icon(Icons.remove),
+                                onPressed: () {
+                                  setState(() {
+                                    if (quantity > 0) quantity--;
+                                  });
+                                },
+                              ),
+                              Text('$quantity', style: fiveTextStyle),
+                              IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  setState(() {
+                                    quantity++;
+                                  });
+                                },
+                              ),
+                            ]
+                          ],
                         );
                       },
                     ),
-                    Icon(
-                      Icons.delete,
-                      color: Colors.red[900],
-                    )
                   ],
                 ),
               ],

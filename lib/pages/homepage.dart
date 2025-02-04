@@ -8,8 +8,8 @@ import 'package:latihankasirapp/pages/createproduk.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBarWidget(
-      child: ListView(
+    return Scaffold(
+      body: ListView(
         children: [
           Homeappbar(),
           Container(
@@ -64,10 +64,11 @@ class HomePage extends StatelessWidget {
                 Text("Daftar Produk", style: sixTextStyle.copyWith(fontSize: 18)),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => CreateProductPage()),
-                    );
+                    showCreateProductModal(context);
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => CreateProductPage()),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
@@ -82,7 +83,10 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          ItemWidget(searchQuery: ''),
+          Container(
+            child: ItemWidget(searchQuery: ''),
+              // decoration: B, design produk list
+          ),
         ],
       ),
     );

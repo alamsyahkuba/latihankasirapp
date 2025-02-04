@@ -129,8 +129,8 @@ class _RegisterPageState extends State<RegisterPage> {
             DropdownButtonFormField<String>(
               value: _selectedJabatan,
               items: [
-                'Admin',
-                'Pegawai',
+                'Petugas',
+                'Pelanggan',
               ].map((jabatan) {
                 return DropdownMenuItem(
                   value: jabatan,
@@ -156,7 +156,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: MaterialStateProperty.all(
                     EdgeInsets.symmetric(horizontal: 30, vertical: 15)),
                 backgroundColor:
-                    MaterialStateProperty.all(Color.fromARGB(255, 224, 13, 13)),
+                    MaterialStateProperty.all(secondaryColor),
                 foregroundColor: MaterialStateProperty.all(Colors.white),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(

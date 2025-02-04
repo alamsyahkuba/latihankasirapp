@@ -80,8 +80,8 @@ class _PelangganPageState extends State<PelangganPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBarWidget(
-      child: Scaffold(
+    return Scaffold(
+      // child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100), // Adjust the height
           child: Homeappbar(), // Your custom app bar
@@ -177,8 +177,8 @@ class _PelangganPageState extends State<PelangganPage> {
             ),
           ],
         ),
-        backgroundColor: Colors.white,
-      ),
+        backgroundColor: backgroundPageColor,
+      // ),
     );
   }
 }

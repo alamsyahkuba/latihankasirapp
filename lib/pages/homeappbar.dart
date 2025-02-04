@@ -18,7 +18,7 @@ class Homeappbar extends StatelessWidget {
           Spacer(), // Memastikan ikon keluar berada di kanan
           IconButton(
             icon: Icon(
-              Icons.exit_to_app,
+              Icons.person,
               size: 30,
               color: secondaryColor ,
             ),

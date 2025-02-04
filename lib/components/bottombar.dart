@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
+import 'package:latihankasirapp/pages/pelanggan.dart';
 import 'package:latihankasirapp/pages/register.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -54,13 +55,12 @@ class _BottomBarState extends State<BottomBar> {
         // Buat daftar halaman sesuai role
         final List<Widget> pages = [
           HomePage(),
-          Center(child: Text("Cart")),
-          Center(child: Text("History")),
-          role != 'Pegawai'
-              ? RegisterPage()
-              : Center(
-                  child: Text("Anda tidak dapat mengakses halaman ini"),
-                ),
+          Center(child: Text("Cart")), //ganti jadi crud pelanggan (role admin)
+          // Center(child: Text("History")),
+          // role != 'Pegawai'
+              /*? */RegisterPage()
+              //  : PelangganPage()
+
         ];
 
         // Buat daftar ikon sesuai role
@@ -69,6 +69,7 @@ class _BottomBarState extends State<BottomBar> {
           Icon(Icons.shopping_cart, size: 30, color: whiteColor),
           Icon(Icons.history, size: 30, color: whiteColor),
           Icon(Icons.people_alt_outlined, size: 30, color: whiteColor),
+          Icon(Icons.app_registration, size: 30, color: whiteColor),
         ];
 
         return Scaffold(
