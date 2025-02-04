@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latihankasirapp/service/auth.dart';
 import 'theme.dart';
 
-class HomeAppBar extends StatelessWidget {
+class Homeappbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -10,8 +10,9 @@ class HomeAppBar extends StatelessWidget {
       padding: EdgeInsets.all(25),
       child: Row(
         children: [
+          //appbar untuk home page
           Text(
-            "Dasbor",
+            "Kasir Pintar",
             style: secondTextStyle.copyWith(fontSize: 25, fontWeight: FontWeight.bold), // Membuat tulisan lebih besar
           ),
           Spacer(), // Memastikan ikon keluar berada di kanan
