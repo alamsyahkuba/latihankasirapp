@@ -30,3 +30,13 @@ Future auth(String email, String password) async {
     return false;
   }
 }
+
+Future logOut(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => Welcomepages()),
+  );
+}

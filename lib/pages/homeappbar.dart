@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihankasirapp/service/auth.dart';
 import 'theme.dart';
 
 class Homeappbar extends StatelessWidget {
@@ -21,9 +22,7 @@ class Homeappbar extends StatelessWidget {
               size: 30,
               color: secondaryColor ,
             ),
-            onPressed: () {
-              // Fungsi untuk keluar bisa ditambahkan di sini
-            },
+            onPressed: () => logOut(context),
           ),
         ],
       ),
