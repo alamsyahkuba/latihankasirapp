@@ -30,6 +30,18 @@ class _ItemWidgetState extends State<ItemWidget> {
     });
   }
 
+  void showEditDialog(BuildContext context, Map<String, dynamic> product) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit Produk'),
+          content: EditProductForm(product: product, onProductUpdated: fetchProducts),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredProducts = products.where((product) {
@@ -42,9 +54,6 @@ class _ItemWidgetState extends State<ItemWidget> {
       itemCount: filteredProducts.length,
       itemBuilder: (context, index) {
         final product = filteredProducts[index];
-        bool showQuantityControls = false;
-        int quantity = 0;
-
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Container(
@@ -65,20 +74,11 @@ class _ItemWidgetState extends State<ItemWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  product['name'],
-                  style: thirdTextStyle,
-                ),
+                Text(product['name'], style: thirdTextStyle),
                 SizedBox(height: 8),
-                Text(
-                  "Harga: ${product['price']}",
-                  style: fiveTextStyle,
-                ),
+                Text("Harga: ${product['price']}", style: fiveTextStyle),
                 SizedBox(height: 6),
-                Text(
-                  "Stok: ${product['stock']}",
-                  style: fiveTextStyle,
-                ),
+                Text("Stok: ${product['stock']}", style: fiveTextStyle),
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,16 +88,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                         IconButton(
                           icon: Icon(Icons.edit),
                           color: Colors.blue[900],
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return EditProductPage(
-                                  product: product,
-                                );
-                              }),
-                            );
-                          },
+                          onPressed: () => showEditDialog(context, product),
                         ),
                         IconButton(
                           icon: Icon(Icons.delete),
@@ -108,42 +99,6 @@ class _ItemWidgetState extends State<ItemWidget> {
                         ),
                       ],
                     ),
-                    StatefulBuilder(
-                      builder: (context, setState) {
-                        return Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.shopping_cart),
-                              color: secondaryColor,
-                              onPressed: () {
-                                setState(() {
-                                  showQuantityControls = !showQuantityControls;
-                                });
-                              },
-                            ),
-                            if (showQuantityControls) ...[
-                              IconButton(
-                                icon: Icon(Icons.remove),
-                                onPressed: () {
-                                  setState(() {
-                                    if (quantity > 0) quantity--;
-                                  });
-                                },
-                              ),
-                              Text('$quantity', style: fiveTextStyle),
-                              IconButton(
-                                icon: Icon(Icons.add),
-                                onPressed: () {
-                                  setState(() {
-                                    quantity++;
-                                  });
-                                },
-                              ),
-                            ]
-                          ],
-                        );
-                      },
-                    ),
                   ],
                 ),
               ],
@@ -151,6 +106,73 @@ class _ItemWidgetState extends State<ItemWidget> {
           ),
         );
       },
+    );
+  }
+}
+
+class EditProductForm extends StatefulWidget {
+  final Map<String, dynamic> product;
+  final VoidCallback onProductUpdated;
+
+  const EditProductForm({super.key, required this.product, required this.onProductUpdated});
+
+  @override
+  _EditProductFormState createState() => _EditProductFormState();
+}
+
+class _EditProductFormState extends State<EditProductForm> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nameController;
+  late TextEditingController _priceController;
+  late TextEditingController _stockController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.product['name']);
+    _priceController = TextEditingController(text: widget.product['price'].toString());
+    _stockController = TextEditingController(text: widget.product['stock'].toString());
+  }
+
+  Future<void> _saveProduct() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    final updatedProduct = {
+      'name': _nameController.text,
+      'price': double.tryParse(_priceController.text),
+      'stock': int.tryParse(_stockController.text),
+    };
+    await supabase.from('products').update(updatedProduct).eq('id', widget.product['id']);
+    widget.onProductUpdated();
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            controller: _nameController,
+            decoration: InputDecoration(labelText: 'Nama Produk'),
+            validator: (value) => value!.isEmpty ? 'Tidak boleh kosong' : null,
+          ),
+          TextFormField(
+            controller: _stockController,
+            decoration: InputDecoration(labelText: 'Stok Produk'),
+            keyboardType: TextInputType.number,
+          ),
+          TextFormField(
+            controller: _priceController,
+            decoration: InputDecoration(labelText: 'Harga Produk'),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(onPressed: _saveProduct, child: Text('Simpan Produk')),
+        ],
+      ),
     );
   }
 }

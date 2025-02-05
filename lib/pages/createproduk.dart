@@ -8,10 +8,24 @@ void showCreateProductModal(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context){
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        title: Text("Tambah Produk", textAlign: TextAlign.center),
-        content: CreateProductPage(),
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Tambah Produk",
+              style: secondTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              CreateProductPage(),
+            ],
+          ),
+        ),
       );
     },
   );
@@ -24,173 +38,64 @@ class CreateProductPage extends StatefulWidget {
 }
 
 class _CreateProductPageState extends State<CreateProductPage> {
-  final supabase = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _stockController = TextEditingController();
 
   Future _saveProduct() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
-    final name = _nameController.text;
-    final priceString = _priceController.text;
-    final stockString = _stockController.text;
-
-    final price = double.tryParse(priceString);
-    final stock = int.tryParse(stockString);
-
-    final response = await supabase.from('products').insert({
-      'name': name,
-      'price': price,
-      'stock': stock,
-    });
-
-    if (response.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Kesalahan: ${response.error.message}')),
-      );
-    } else {
-      _nameController.clear();
-      _priceController.clear();
-      _stockController.clear();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Produk berhasil ditambahkan')),
-      );
-    }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
-    );
+    // Simpan produk ke database
+    // Setelah sukses, tutup modal
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
-        );
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Buat Produk', style: sixTextStyle),
-          leading: IconButton(
-            icon: Icon(Icons.chevron_left),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => BottomBar(initialIndex: 0,)),
-              );
-            },
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  style: sevenTextStyle.copyWith(
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Tambahkan padding agar tidak terlalu penuh
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildTextField(_nameController, "Nama Produk"),
+              SizedBox(height: 10),
+              _buildTextField(_stockController, "Stok Produk", isNumber: true),
+              SizedBox(height: 10),
+              _buildTextField(_priceController, "Harga Produk", isNumber: true),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("Batal", style: TextStyle(color: Colors.red)),
                   ),
-                  decoration: InputDecoration(
-                    labelText: 'Nama Produk',
-                    labelStyle: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                  ElevatedButton(
+                    onPressed: _saveProduct,
+                    child: Text("Simpan Produk"),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Nama produk tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: _stockController,
-                  keyboardType: TextInputType.number,
-                  style: sevenTextStyle.copyWith(
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Stok Produk',
-                    labelStyle: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Stok produk tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: _priceController,
-                  keyboardType: TextInputType.number,
-                  style: sevenTextStyle.copyWith(
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Harga Produk',
-                    labelStyle: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Harga produk tidak boleh kosong';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return 'Masukkan harga yang valid';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _saveProduct,
-                  child: Text(
-                    'Simpan Produk',
-                    style: secondTextStyle.copyWith(
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, {bool isNumber = false}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
     );
   }
 }
