@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 import 'package:latihankasirapp/pages/theme.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TransaksiPage extends StatefulWidget {
   @override
@@ -9,12 +10,28 @@ class TransaksiPage extends StatefulWidget {
 }
 
 class _TransaksiPageState extends State<TransaksiPage> {
-  String selectedCustomer = 'Isma';
-  final List<String> customers = ['Isma', 'Nisa', 'Rena'];
+  String? selectedCustomer;
+  List<Map<String, dynamic>> customers = [];
+
+  final supabase = Supabase.instance.client;
+
+  Future fetchCustomers() async {
+    final response = await supabase.from('pelanggan').select();
+    setState(() {
+      customers = List<Map<String, dynamic>>.from(response);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCustomers();
+  }
 
   void _showStrukPopup() {
-    String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
-    
+    String formattedDate =
+        DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -34,7 +51,10 @@ class _TransaksiPageState extends State<TransaksiPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       boxShadow: [
-                        BoxShadow(color: Colors.black26, blurRadius: 4, spreadRadius: 1),
+                        BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            spreadRadius: 1),
                       ],
                     ),
                     child: Column(
@@ -43,7 +63,10 @@ class _TransaksiPageState extends State<TransaksiPage> {
                         Center(
                           child: Text(
                             "Struk Pembelian",
-                            style: sixTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold, color: secondaryColor),
+                            style: sixTextStyle.copyWith(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: secondaryColor),
                           ),
                         ),
                         SizedBox(height: 8),
@@ -63,19 +86,31 @@ class _TransaksiPageState extends State<TransaksiPage> {
                             TableRow(children: [
                               Padding(
                                 padding: EdgeInsets.all(12.0),
-                                child: Text('Nama Produk', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                child: Text('Nama Produk',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14)),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(12.0),
-                                child: Text('Jumlah', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                child: Text('Jumlah',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14)),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(12.0),
-                                child: Text('Harga', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                child: Text('Harga',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14)),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(12.0),
-                                child: Text('Total Harga', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                child: Text('Total Harga',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14)),
                               ),
                             ]),
                             TableRow(children: [
@@ -120,8 +155,14 @@ class _TransaksiPageState extends State<TransaksiPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: const [
-                            Text('Total Transaksi:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                            Text('9.500', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent)),
+                            Text('Total Transaksi:',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text('9.500',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.redAccent)),
                           ],
                         ),
                         Align(
@@ -149,9 +190,10 @@ class _TransaksiPageState extends State<TransaksiPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title:  Text(
+        title: Text(
           "Transaksi",
-          style: sixTextStyle.copyWith (fontSize: 22, fontWeight: FontWeight.bold, color: secondaryColor),
+          style: sixTextStyle.copyWith(
+              fontSize: 22, fontWeight: FontWeight.bold, color: secondaryColor),
         ),
       ),
       body: Padding(
@@ -159,14 +201,15 @@ class _TransaksiPageState extends State<TransaksiPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Nama Pelanggan", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text("Nama Pelanggan",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: selectedCustomer,
-              items: customers.map((String customer) {
+              items: customers.map((customer) {
                 return DropdownMenuItem<String>(
-                  value: customer,
-                  child: Text(customer),
+                  value: customer['nama'],
+                  child: Text(customer['nama']),
                 );
               }).toList(),
               onChanged: (newValue) {
@@ -175,7 +218,9 @@ class _TransaksiPageState extends State<TransaksiPage> {
                 });
               },
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                hintText: "Pilih pelanggan",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
               ),
             ),
             const SizedBox(height: 16),
@@ -186,10 +231,22 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   backgroundColor: Colors.red,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                onPressed: _showStrukPopup,
+                onPressed: () {
+                  if (selectedCustomer == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text("Pilih pelanggan terlebih dahulu!")),
+                    );
+                    return;
+                  }
+                  _showStrukPopup;
+                },
                 child: const Text(
                   'Buat Struk',
-                  style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -216,7 +273,7 @@ class SobekanPainter extends CustomPainter {
     path.close();
     canvas.drawPath(path, paint);
   }
-  
+
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latihankasirapp/pages/editproduk.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:latihankasirapp/pages/createproduk.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -11,10 +12,10 @@ class ItemWidget extends StatefulWidget {
   final String searchQuery;
 
   @override
-  _ItemWidgetState createState() => _ItemWidgetState();
+  ItemWidgetState createState() => ItemWidgetState();
 }
 
-class _ItemWidgetState extends State<ItemWidget> {
+class ItemWidgetState extends State<ItemWidget> {
   List<Map<String, dynamic>> products = [];
   Map<int, int> cartItems = {}; // Menyimpan jumlah produk dalam keranjang
 
@@ -25,10 +26,22 @@ class _ItemWidgetState extends State<ItemWidget> {
   }
 
   Future fetchProducts() async {
-    final response = await supabase.from('products').select().order('created_at', ascending: false);
+    final response = await supabase
+        .from('products')
+        .select()
+        .order('created_at', ascending: false);
     setState(() {
       products = List<Map<String, dynamic>>.from(response);
     });
+  }
+
+  void deleteProduct(int productId) async {
+    await supabase.from('products').delete().match({'id': productId});
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Produk berhasil dihapus!')),
+    );
+    Navigator.pop(context);
+    fetchProducts();
   }
 
   void showEditDialog(BuildContext context, Map<String, dynamic> product) {
@@ -37,7 +50,42 @@ class _ItemWidgetState extends State<ItemWidget> {
       builder: (context) {
         return AlertDialog(
           title: Text('Edit Produk'),
-          content: EditProductPage(product: product, onProductUpdated: fetchProducts), 
+          content: EditProductPage(
+              product: product, onProductUpdated: fetchProducts),
+        );
+      },
+    );
+  }
+
+  void showDeleteDialog(BuildContext context, Map<String, dynamic> product) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete Produk'),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Text("Anda yakin ingin menghaous product ini?"),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child:
+                            Text("Batal", style: TextStyle(color: Colors.red)),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => deleteProduct(product['id']),
+                        child: Text("Hapus"),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
@@ -71,7 +119,7 @@ class _ItemWidgetState extends State<ItemWidget> {
         final product = filteredProducts[index];
         final productId = product['id'];
         final cartCount = cartItems[productId] ?? 0;
-        
+
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Container(
@@ -111,9 +159,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                         IconButton(
                           icon: Icon(Icons.delete),
                           color: Colors.red[900],
-                          onPressed: () {
-                            // Tambahkan logika penghapusan produk
-                          },
+                          onPressed: () => showDeleteDialog(context, product),
                         ),
                       ],
                     ),
