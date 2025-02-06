@@ -149,14 +149,14 @@ class _WelcomepagesState extends State<Welcomepages> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("Lupa password?",
-                textAlign: TextAlign.right,
-                style: thirdTextStyle.copyWith(
-                  fontSize: 10,
-                )),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // Text("Lupa password?",
+            //     textAlign: TextAlign.right,
+            //     style: thirdTextStyle.copyWith(
+            //       fontSize: 10,
+            //     )),
           ],
         ),
       ),

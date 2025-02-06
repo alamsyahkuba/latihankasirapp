@@ -16,6 +16,7 @@ class ItemWidget extends StatefulWidget {
 
 class _ItemWidgetState extends State<ItemWidget> {
   List<Map<String, dynamic>> products = [];
+  Map<int, int> cartItems = {}; // Menyimpan jumlah produk dalam keranjang
 
   @override
   void initState() {
@@ -36,10 +37,24 @@ class _ItemWidgetState extends State<ItemWidget> {
       builder: (context) {
         return AlertDialog(
           title: Text('Edit Produk'),
-          content: EditProductForm(product: product, onProductUpdated: fetchProducts),
+          content: EditProductPage(product: product, onProductUpdated: fetchProducts), 
         );
       },
     );
+  }
+
+  void _incrementCart(int productId) {
+    setState(() {
+      cartItems[productId] = (cartItems[productId] ?? 0) + 1;
+    });
+  }
+
+  void _decrementCart(int productId) {
+    setState(() {
+      if (cartItems[productId] != null && cartItems[productId]! > 0) {
+        cartItems[productId] = cartItems[productId]! - 1;
+      }
+    });
   }
 
   @override
@@ -54,6 +69,9 @@ class _ItemWidgetState extends State<ItemWidget> {
       itemCount: filteredProducts.length,
       itemBuilder: (context, index) {
         final product = filteredProducts[index];
+        final productId = product['id'];
+        final cartCount = cartItems[productId] ?? 0;
+        
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Container(
@@ -99,6 +117,27 @@ class _ItemWidgetState extends State<ItemWidget> {
                         ),
                       ],
                     ),
+                    cartCount > 0
+                        ? Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.remove),
+                                color: Colors.red,
+                                onPressed: () => _decrementCart(productId),
+                              ),
+                              Text('$cartCount', style: fiveTextStyle),
+                              IconButton(
+                                icon: Icon(Icons.add),
+                                color: Colors.green,
+                                onPressed: () => _incrementCart(productId),
+                              ),
+                            ],
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.shopping_cart),
+                            color: secondaryColor,
+                            onPressed: () => _incrementCart(productId),
+                          ),
                   ],
                 ),
               ],
@@ -106,73 +145,6 @@ class _ItemWidgetState extends State<ItemWidget> {
           ),
         );
       },
-    );
-  }
-}
-
-class EditProductForm extends StatefulWidget {
-  final Map<String, dynamic> product;
-  final VoidCallback onProductUpdated;
-
-  const EditProductForm({super.key, required this.product, required this.onProductUpdated});
-
-  @override
-  _EditProductFormState createState() => _EditProductFormState();
-}
-
-class _EditProductFormState extends State<EditProductForm> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _priceController;
-  late TextEditingController _stockController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.product['name']);
-    _priceController = TextEditingController(text: widget.product['price'].toString());
-    _stockController = TextEditingController(text: widget.product['stock'].toString());
-  }
-
-  Future<void> _saveProduct() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    final updatedProduct = {
-      'name': _nameController.text,
-      'price': double.tryParse(_priceController.text),
-      'stock': int.tryParse(_stockController.text),
-    };
-    await supabase.from('products').update(updatedProduct).eq('id', widget.product['id']);
-    widget.onProductUpdated();
-    Navigator.pop(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFormField(
-            controller: _nameController,
-            decoration: InputDecoration(labelText: 'Nama Produk'),
-            validator: (value) => value!.isEmpty ? 'Tidak boleh kosong' : null,
-          ),
-          TextFormField(
-            controller: _stockController,
-            decoration: InputDecoration(labelText: 'Stok Produk'),
-            keyboardType: TextInputType.number,
-          ),
-          TextFormField(
-            controller: _priceController,
-            decoration: InputDecoration(labelText: 'Harga Produk'),
-            keyboardType: TextInputType.number,
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(onPressed: _saveProduct, child: Text('Simpan Produk')),
-        ],
-      ),
     );
   }
 }

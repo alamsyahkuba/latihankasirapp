@@ -7,7 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditProductPage extends StatefulWidget {
   final Map<String, dynamic> product;
-  const EditProductPage({super.key, required this.product});
+  final VoidCallback onProductUpdated;
+
+  const EditProductPage({super.key, required this.product, required this.onProductUpdated});
 
   @override
   _EditProductPageState createState() => _EditProductPageState();
@@ -51,6 +53,7 @@ class _EditProductPageState extends State<EditProductPage> {
         SnackBar(content: Text('Kesalahan saat menyimpan produk')),
       );
     } else {
+      widget.onProductUpdated();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Produk berhasil diperbarui!')),
       );
