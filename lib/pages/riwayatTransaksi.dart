@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihankasirapp/pages/theme.dart';
 
 class RiwayatTransaksi extends StatefulWidget {
   @override
@@ -25,8 +26,8 @@ class _RiwayatTransaksiState extends State<RiwayatTransaksi> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Riwayat Transaksi', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.red.shade700,
+        title: Text("Riwayat Transaksi", style: sixTextStyle.copyWith(fontSize: 22, color: secondaryColor)),
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
