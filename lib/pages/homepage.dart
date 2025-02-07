@@ -1,11 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:latihankasirapp/pages/bottomnavigationbar.dart'; // Import BottomNavigationBarWidget
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/homeappbar.dart';
 import 'package:latihankasirapp/pages/itemwidget.dart';
 import 'package:latihankasirapp/pages/createproduk.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String searchQuery = '';
+  final GlobalKey<ItemWidgetState> itemWidgetKey = GlobalKey();
+
+  void fetchProducts() {
+    itemWidgetKey.currentState?.fetchProducts();
+  }
+
+  void showCreateProductModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Tambah Produk",
+                  style: secondTextStyle.copyWith(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                CreateProductPage(
+                  onProductCreated: fetchProducts,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +84,11 @@ class HomePage extends StatelessWidget {
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Ketik untuk cari..."),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            setState(() {
+                              searchQuery = value;
+                            });
+                          },
                         ),
                       ),
                       Spacer(),
@@ -61,14 +108,11 @@ class HomePage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Daftar Produk", style: sixTextStyle.copyWith(fontSize: 18)),
+                Text("Daftar Produk",
+                    style: sixTextStyle.copyWith(fontSize: 18)),
                 ElevatedButton(
                   onPressed: () {
                     showCreateProductModal(context);
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => CreateProductPage()),
-                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
@@ -83,10 +127,7 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            child: ItemWidget(searchQuery: ''),
-              // decoration: B, design produk list
-          ),
+          ItemWidget(key: itemWidgetKey, searchQuery: searchQuery),
         ],
       ),
     );
