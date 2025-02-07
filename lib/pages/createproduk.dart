@@ -4,40 +4,16 @@ import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:latihankasirapp/components/bottombar.dart';
 
-void showCreateProductModal(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context){
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15)
-        ),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Tambah Produk",
-              style: secondTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              CreateProductPage(),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
 class CreateProductPage extends StatefulWidget {
-  const CreateProductPage({super.key});
+  const CreateProductPage({super.key, required this.onProductCreated});
+  final VoidCallback onProductCreated;
 
   @override
   _CreateProductPageState createState() => _CreateProductPageState();
 }
 
 class _CreateProductPageState extends State<CreateProductPage> {
+  final supabase = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
@@ -46,16 +22,41 @@ class _CreateProductPageState extends State<CreateProductPage> {
   Future _saveProduct() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final name = _nameController.text;
+    final priceString = _priceController.text;
+    final stockString = _stockController.text;
+
+    final price = double.tryParse(priceString);
+    final stock = int.tryParse(stockString);
+
     // Simpan produk ke database
-    // Setelah sukses, tutup modal
-    Navigator.pop(context);
+    final response = await supabase.from('products').insert({
+      'name': name,
+      'price': price,
+      'stock': stock,
+    });
+
+    if (response != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Kesalahan saat menyimpan produk')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Produk berhasil ditambahkan!')),
+      );
+      widget.onProductCreated();
+      // Setelah sukses, tutup modal
+      Navigator.pop(context, true); // Tutup modal setelah update
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Tambahkan padding agar tidak terlalu penuh
+        padding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8), // Tambahkan padding agar tidak terlalu penuh
         child: Form(
           key: _formKey,
           child: Column(
@@ -87,7 +88,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, {bool isNumber = false}) {
+  Widget _buildTextField(TextEditingController controller, String label,
+      {bool isNumber = false}) {
     return TextFormField(
       controller: controller,
       keyboardType: isNumber ? TextInputType.number : TextInputType.text,

@@ -3,7 +3,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:latihankasirapp/pages/homepage.dart';
 import 'package:latihankasirapp/pages/pelanggan.dart';
 import 'package:latihankasirapp/pages/register.dart';
+import 'package:latihankasirapp/pages/riwayatTransaksi.dart';
 import 'package:latihankasirapp/pages/theme.dart';
+import 'package:latihankasirapp/pages/transaksi.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,21 +57,25 @@ class _BottomBarState extends State<BottomBar> {
         // Buat daftar halaman sesuai role
         final List<Widget> pages = [
           HomePage(),
-          Center(child: Text("Cart")), //ganti jadi crud pelanggan (role admin)
-          // Center(child: Text("History")),
-          // role != 'Pegawai'
-              /*? */RegisterPage()
-              //  : PelangganPage()
-
+          if (role != 'Pegawai') ...[
+            PelangganPage(),
+            RegisterPage(),
+          ] else ...[
+            TransaksiPage(),
+            RiwayatTransaksi(),
+          ]
         ];
 
         // Buat daftar ikon sesuai role
         final List<Icon> icons = [
           Icon(Icons.home, size: 30, color: whiteColor),
-          Icon(Icons.shopping_cart, size: 30, color: whiteColor),
-          Icon(Icons.history, size: 30, color: whiteColor),
-          Icon(Icons.people_alt_outlined, size: 30, color: whiteColor),
-          Icon(Icons.app_registration, size: 30, color: whiteColor),
+          if (role != 'Pegawai') ...[
+            Icon(Icons.people_alt_outlined, size: 30, color: whiteColor),
+            Icon(Icons.app_registration, size: 30, color: whiteColor),
+          ] else ...[
+            Icon(Icons.shopping_cart, size: 30, color: whiteColor),
+            Icon(Icons.history, size: 30, color: whiteColor),
+          ]
         ];
 
         return Scaffold(
