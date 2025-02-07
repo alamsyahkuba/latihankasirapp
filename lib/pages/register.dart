@@ -129,8 +129,8 @@ class _RegisterPageState extends State<RegisterPage> {
             DropdownButtonFormField<String>(
               value: _selectedJabatan,
               items: [
+                'Admin',
                 'Petugas',
-                'Pelanggan',
               ].map((jabatan) {
                 return DropdownMenuItem(
                   value: jabatan,

@@ -68,7 +68,7 @@ class ItemWidgetState extends State<ItemWidget> {
               padding: EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text("Anda yakin ingin menghaous product ini?"),
+                  Text("Anda yakin ingin menghapus produk ini?"),
                   Row(
                     children: [
                       TextButton(
@@ -191,6 +191,7 @@ class ItemWidgetState extends State<ItemWidget> {
           ),
         );
       },
+      
     );
   }
 }
