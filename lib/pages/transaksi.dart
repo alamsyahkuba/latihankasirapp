@@ -198,10 +198,10 @@ class _TransaksiPageState extends State<TransaksiPage> {
                 Table(
                   border: TableBorder.all(color: greyColor),
                   columnWidths: {
-                    0: FlexColumnWidth(3.2),
-                    1: FlexColumnWidth(2.5),
-                    2: FlexColumnWidth(2.3),
-                    3: FlexColumnWidth(2.5),
+                    0: FlexColumnWidth(3.0),
+                    1: FlexColumnWidth(2.9),
+                    2: FlexColumnWidth(2.4),
+                    3: FlexColumnWidth(2.4),
                   },
                   children: [
                     _buildTableRow(
@@ -398,7 +398,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   padding: EdgeInsets.symmetric(vertical: 16),
                 ),
                 onPressed: _simpanTransaksi,
-                child: Text('Simpan',
+                child: Text('Cetak Struk',
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
