@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:latihankasirapp/components/bottombar.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/homeappbar.dart';
 import 'package:latihankasirapp/pages/itemwidget.dart';
 import 'package:latihankasirapp/pages/createproduk.dart';
+import 'package:latihankasirapp/pages/transaksi.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,9 +16,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String searchQuery = '';
   final GlobalKey<ItemWidgetState> itemWidgetKey = GlobalKey();
+  Map<int, Map<String, dynamic>> cartItems = {};
 
   void fetchProducts() {
     itemWidgetKey.currentState?.fetchProducts();
+  }
+
+  void addToCart(int productId, String name, double price) {
+    setState(() {
+      if (cartItems.containsKey(productId)) {
+        // Jika produk sudah ada di keranjang, update jumlahnya
+        cartItems[productId]!['jumlah'] += 1;
+      } else {
+        // Jika produk belum ada di keranjang, tambahkan ke keranjang
+        cartItems[productId] = {
+          'name': name,
+          'price': price,
+          'jumlah': 1,
+        };
+      }
+    });
+    print(cartItems); // Log untuk melihat apakah cartItems sudah terisi
+  }
+
+  void updateCart(Map<int, Map<String, dynamic>> newCart) {
+    setState(() {
+      cartItems = newCart;
+    });
   }
 
   void showCreateProductModal(BuildContext context) {
@@ -52,82 +78,121 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: Stack(
         children: [
-          Homeappbar(),
-          Container(
-            padding: EdgeInsets.only(top: 15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(35),
-                topRight: Radius.circular(35),
-              ),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
+          ListView(
+            children: [
+              Homeappbar(),
+              Container(
+                padding: EdgeInsets.only(top: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(35),
+                    topRight: Radius.circular(35),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 5),
-                        height: 50,
-                        width: 300,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Ketik untuk cari..."),
-                          onChanged: (value) {
-                            setState(() {
-                              searchQuery = value;
-                            });
-                          },
-                        ),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      Spacer(),
-                      Icon(
-                        Icons.search,
-                        size: 27,
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 5),
+                            height: 50,
+                            width: 300,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Ketik untuk cari..."),
+                              onChanged: (value) {
+                                setState(() {
+                                  searchQuery = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.search,
+                            size: 27,
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Daftar Produk",
+                        style: sixTextStyle.copyWith(fontSize: 18)),
+                    ElevatedButton(
+                      onPressed: () {
+                        showCreateProductModal(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(10),
+                        backgroundColor: fourthColor,
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              ItemWidget(
+                key: itemWidgetKey,
+                searchQuery: searchQuery,
+                onCartUpdated: updateCart,
+              ),
+            ],
           ),
-          Container(
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Daftar Produk",
-                    style: sixTextStyle.copyWith(fontSize: 18)),
-                ElevatedButton(
-                  onPressed: () {
-                    showCreateProductModal(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(10),
-                    backgroundColor: fourthColor,
-                  ),
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                )
-              ],
-            ),
-          ),
-          ItemWidget(key: itemWidgetKey, searchQuery: searchQuery),
+          // if (cartItems.isNotEmpty)
+          //   Positioned(
+          //     left: 20,
+          //     right: 20,
+          //     bottom: 20,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: secondaryColor,
+          //         padding: EdgeInsets.symmetric(vertical: 16),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(10),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         Navigator.pushReplacement(
+          //           context,
+          //           MaterialPageRoute(
+          //             builder: (context) => TransaksiPage(cartItems: cartItems,)
+          //           ),
+          //         );
+          //       },
+          //       child: Text(
+          //         'Lihat Transaksi',
+          //         style: TextStyle(
+          //           fontSize: 16,
+          //           color: Colors.white,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );
