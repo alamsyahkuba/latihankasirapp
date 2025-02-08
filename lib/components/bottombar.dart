@@ -6,6 +6,7 @@ import 'package:latihankasirapp/pages/register.dart';
 import 'package:latihankasirapp/pages/riwayatTransaksi.dart';
 import 'package:latihankasirapp/pages/theme.dart';
 import 'package:latihankasirapp/pages/transaksi.dart';
+import 'package:latihankasirapp/pages/user.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,7 +61,7 @@ class _BottomBarState extends State<BottomBar> {
           HomePage(),
           if (role != 'Pegawai') ...[
             PelangganPage(),
-            RegisterPage(),
+            UserPage(),
           ] else ...[
             TransaksiPage(),
             RiwayatTransaksi(),

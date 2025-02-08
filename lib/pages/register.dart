@@ -4,7 +4,9 @@ import 'theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  const RegisterPage({super.key, required this.onUserCreated});
+
+  final VoidCallback onUserCreated;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -43,18 +45,29 @@ class _RegisterPageState extends State<RegisterPage> {
       'email': email,
       'username': username,
       'password': hashedPassword,
+      'plain_password': password,
       'role': jabatan,
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Registrasi berhasil")),
     );
+
+    widget.onUserCreated();
+    Navigator.pop(context, true);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: whiteColor,
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.chevron_left)),
+      ),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -130,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
               value: _selectedJabatan,
               items: [
                 'Admin',
-                'Petugas',
+                'Pegawai',
               ].map((jabatan) {
                 return DropdownMenuItem(
                   value: jabatan,
@@ -155,8 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(
                     EdgeInsets.symmetric(horizontal: 30, vertical: 15)),
-                backgroundColor:
-                    MaterialStateProperty.all(secondaryColor),
+                backgroundColor: MaterialStateProperty.all(secondaryColor),
                 foregroundColor: MaterialStateProperty.all(Colors.white),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(

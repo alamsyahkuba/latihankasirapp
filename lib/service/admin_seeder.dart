@@ -17,7 +17,7 @@ Future seedDataOnce() async { //untuk melihat data sekali
         'email': 'adminsierra@gmail.com',
         'username': 'Adminsierra',
         'password': hashedPassword,
-        'role': 'admin',
+        'role': 'Admin',
       });
     } else {
       // ignore: avoid_print

@@ -22,29 +22,6 @@ class _HomePageState extends State<HomePage> {
     itemWidgetKey.currentState?.fetchProducts();
   }
 
-  void addToCart(int productId, String name, double price) {
-    setState(() {
-      if (cartItems.containsKey(productId)) {
-        // Jika produk sudah ada di keranjang, update jumlahnya
-        cartItems[productId]!['jumlah'] += 1;
-      } else {
-        // Jika produk belum ada di keranjang, tambahkan ke keranjang
-        cartItems[productId] = {
-          'name': name,
-          'price': price,
-          'jumlah': 1,
-        };
-      }
-    });
-    print(cartItems); // Log untuk melihat apakah cartItems sudah terisi
-  }
-
-  void updateCart(Map<int, Map<String, dynamic>> newCart) {
-    setState(() {
-      cartItems = newCart;
-    });
-  }
-
   void showCreateProductModal(BuildContext context) {
     showDialog(
       context: context,
@@ -114,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                                   hintText: "Ketik untuk cari..."),
                               onChanged: (value) {
                                 setState(() {
-                                  searchQuery = value;
+                                  searchQuery = value.toLowerCase();
                                 });
                               },
                             ),
@@ -158,41 +135,10 @@ class _HomePageState extends State<HomePage> {
               ItemWidget(
                 key: itemWidgetKey,
                 searchQuery: searchQuery,
-                onCartUpdated: updateCart,
+                // onCartUpdated: updateCart,
               ),
             ],
           ),
-          // if (cartItems.isNotEmpty)
-          //   Positioned(
-          //     left: 20,
-          //     right: 20,
-          //     bottom: 20,
-          //     child: ElevatedButton(
-          //       style: ElevatedButton.styleFrom(
-          //         backgroundColor: secondaryColor,
-          //         padding: EdgeInsets.symmetric(vertical: 16),
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(10),
-          //         ),
-          //       ),
-          //       onPressed: () {
-          //         Navigator.pushReplacement(
-          //           context,
-          //           MaterialPageRoute(
-          //             builder: (context) => TransaksiPage(cartItems: cartItems,)
-          //           ),
-          //         );
-          //       },
-          //       child: Text(
-          //         'Lihat Transaksi',
-          //         style: TextStyle(
-          //           fontSize: 16,
-          //           color: Colors.white,
-          //           fontWeight: FontWeight.bold,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
         ],
       ),
     );

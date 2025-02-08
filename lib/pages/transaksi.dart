@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+// import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:latihankasirapp/pages/theme.dart';
+import 'package:latihankasirapp/pages/struk.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TransaksiPage extends StatefulWidget {
   const TransaksiPage({super.key});
@@ -17,7 +20,8 @@ class _TransaksiPageState extends State<TransaksiPage> {
   List<Map<String, dynamic>> products = [];
   List<Map<String, dynamic>> cartItems = [];
   final supabase = Supabase.instance.client;
-  // final _formKey = GlobalKey<FormState>();
+  String? username;
+  final TextEditingController _paymentController = TextEditingController();
 
   Future fetchCustomers() async {
     final response = await supabase.from('pelanggan').select();
@@ -38,6 +42,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
     super.initState();
     fetchCustomers();
     fetchProducts();
+    getUsername();
   }
 
   void _addProductToCart(Map<String, dynamic> product) {
@@ -92,6 +97,22 @@ class _TransaksiPageState extends State<TransaksiPage> {
       total += item['jumlah'] * item['price'];
     }
     return total;
+  }
+
+  Future getUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('user_id');
+    final response = await supabase
+        .from('users')
+        .select('username')
+        .eq('id', userId as Object)
+        .maybeSingle();
+
+    setState(() {
+      username = response?['username'] as String?;
+    });
+    // final username = response?['username'] as String?;
+    // return username;
   }
 
   Future<void> _simpanTransaksi() async {
@@ -162,102 +183,31 @@ class _TransaksiPageState extends State<TransaksiPage> {
       }
     }
 
-    // Jika semua berhasil disimpan, tampilkan struk
-    _showStrukPopup();
-  }
+    // Ambil nilai pembayaran dari input
+    double paymentAmount = double.tryParse(_paymentController.text) ?? 0.0;
+    double totalAmount = _calculateTotal();
+    double changeAmount = paymentAmount - totalAmount;
 
-  // Menampilkan popup struk
-  void _showStrukPopup() {
-    String formattedDate =
-        DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          contentPadding: EdgeInsets.all(16),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    "Struk Pembelian",
-                    style: secondTextStyle.copyWith(fontSize: 19),
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text("Tanggal: $formattedDate",
-                    style: fourthTextStyle.copyWith(color: Colors.black)),
-                Text("Pelanggan: ${selectedCustomer ?? '-'}",
-                    style: fourthTextStyle.copyWith(color: Colors.black)),
-                SizedBox(height: 10),
-                Text("Detail Transaksi:",
-                    style: fourthTextStyle.copyWith(color: Colors.black)),
-                SizedBox(height: 8),
-                Table(
-                  border: TableBorder.all(color: greyColor),
-                  columnWidths: {
-                    0: FlexColumnWidth(3.0),
-                    1: FlexColumnWidth(2.9),
-                    2: FlexColumnWidth(2.4),
-                    3: FlexColumnWidth(2.4),
-                  },
-                  children: [
-                    _buildTableRow(
-                      ['Nama Produk', 'Jumlah', 'Harga', 'Total Harga'],
-                      isHeader: true,
-                    ),
-                    ...cartItems.map((product) {
-                      return _buildTableRow([
-                        product['name'],
-                        product['jumlah'].toString(),
-                        NumberFormat.currency(locale: 'id-ID', symbol: 'Rp ')
-                            .format(product['price']),
-                        NumberFormat.currency(locale: 'id-ID', symbol: 'Rp ')
-                            .format(product['jumlah'] * product['price']),
-                      ]);
-                    }).toList(),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Total Transaksi:',
-                        style: fourthTextStyle.copyWith(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold)),
-                    Text(
-                      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
-                          .format(_calculateTotal()),
-                      style: secondTextStyle.copyWith(
-                          fontSize: 15, color: Colors.redAccent),
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      // Reset form setelah transaksi selesai
-                      setState(() {
-                        selectedCustomer =
-                            null; // Mengosongkan pelanggan yang dipilih
-                        selectedProduct = null;
-                        cartItems.clear(); // Mengosongkan keranjang
-                      });
-                    },
-                    child: Text("Tutup", style: fiveTextStyle),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    if (paymentAmount < totalAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Uang kurang! Masukkan jumlah yang cukup.")),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReceiptPage(
+          transactionId: penjualanId.toString(),
+          cashier: username ?? "Kasir",
+          customer: selectedCustomer ?? "Pelanggan",
+          items: cartItems,
+          totalAmount: totalAmount,
+          payment: paymentAmount,
+          change: changeAmount,
+        ),
+      ),
     );
   }
 
@@ -335,6 +285,21 @@ class _TransaksiPageState extends State<TransaksiPage> {
               },
               decoration: InputDecoration(
                 hintText: "Pilih produk",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            // Form untuk menambah produk
+            Text("Bayar", style: eightTextStyle),
+            SizedBox(height: 8),
+            TextField(
+              controller: _paymentController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                hintText: "Uang pembayaran",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0)),
               ),
