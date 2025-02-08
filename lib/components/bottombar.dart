@@ -11,7 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomBar extends StatefulWidget {
   final int initialIndex;
-  const BottomBar({super.key, this.initialIndex = 0});
+  final Map<int, Map<String, dynamic>>? cartItems;
+  const BottomBar({super.key, this.initialIndex = 0, this.cartItems});
 
   @override
   _BottomBarState createState() => _BottomBarState();
